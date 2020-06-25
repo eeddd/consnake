@@ -32,8 +32,9 @@ struct Uod
 Vec food;
 
 bool gameover = false;
-char key;
+int key;
 int W = 30, H = 30;
+int score = 0;
 
 void Init()
 {
@@ -73,21 +74,29 @@ void Update()
 
     switch (key)
     {
-    case 'w':
-        uod.dx = 0;
-        uod.dy = -1;
+    case KEY_UP:
+        if (uod.dy != 1) {
+            uod.dx = 0;
+            uod.dy = -1;
+        }
         break;
-    case 'd':
-        uod.dx = 1;
-        uod.dy = 0;
+    case KEY_RIGHT:
+        if (uod.dx != -1) {
+            uod.dx = 1;
+            uod.dy = 0;
+        }
         break;
-    case 's':
-        uod.dx = 0;
-        uod.dy = 1;
+    case KEY_DOWN:
+        if (uod.dy != -1) {
+            uod.dx = 0;
+            uod.dy = 1;
+        }
         break;
-    case 'a':
-        uod.dx = -1;
-        uod.dy = 0;
+    case KEY_LEFT:
+        if (uod.dx != 1) {
+            uod.dx = -1;
+            uod.dy = 0;
+        }
         break;
     }
 
@@ -96,12 +105,16 @@ void Update()
 
     if (food.x == uod.x() && food.y == uod.y())
     {
-        food.x = rand() % W;
-        food.y = rand() % H;
-        uod.size += 1;
+        srand(time(NULL));
+        food.x = rand() % (W-2) + 1;
+        food.y = rand() % (H-2) + 1;
+        uod.size++;
+        score++;
     }
 
-    if (uod.x() < 0 || uod.x() >= W || uod.y() < 0 || uod.y() >= H || uod.hit(uod.x(), uod.y(), 1)) 
+    if (uod.x() == 0 || uod.x() == W-1 
+        || uod.y() == 0 || uod.y() == H-1 
+        || uod.hit(uod.x(), uod.y(), 1)) 
     {
         gameover = true;
     }
@@ -121,7 +134,7 @@ int main()
     
     while (!gameover)
     {
-	key = getch();
+	    key = getch();
 
         Draw();
         Update();
